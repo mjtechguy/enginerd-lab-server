@@ -1,0 +1,12 @@
+{
+    "editor.fontFamily": "'Fira Code', 'Fira Mono', 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
+    "editor.fontLigatures": "'zero', 'ss02', 'ss03', 'ss04', 'ss05', 'calt'",
+    "editor.fontSize": 14,
+    "markdown.preview.fontSize": 14,
+    "workbench.colorTheme": "Default Dark+",
+    "terminal.integrated.defaultProfile.linux": "zsh",
+    "terminal.integrated.fontSize": 14,
+    "terminal.integrated.automationProfile.linux": {
+    
+    }
+}

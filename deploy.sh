@@ -108,6 +108,7 @@ fi
 if [[ "$DISTRO" == *"Ubuntu"* ]] || [[ "$DISTRO" == *"debian"* ]]; then
     echo -e ${G}"Installing VSCode-Server..."${E}
     sudo mkdir -p /enginerding-labs
+    sudo mkdir -p /$USER/misc/code-server/User
     curl -fsSL -o /tmp/code-server_${VSCODE_VERSION}_amd64.deb https://github.com/coder/code-server/releases/download/v${VSCODE_VERSION}/code-server_${VSCODE_VERSION}_amd64.deb
     sudo dpkg -i /tmp/code-server_${VSCODE_VERSION}_amd64.deb
     systemctl stop code-server@$USER
@@ -220,8 +221,9 @@ fi
 if [[ "$DISTRO" == *"fedora"* ]] || [[ "$DISTRO" == *"centos"* ]] || [[ "$DISTRO" == *"rocky"* ]]; then
     echo -e ${G}"Installing VSCode-Server..."${E}
     sudo mkdir -p /enginerding-labs
+    sudo mkdir -p /$USER/misc/code-server/User
     curl -fsSL -o /tmp/code-server_${VSCODE_VERSION}_amd64.rpm https://github.com/coder/code-server/releases/download/v${VSCODE_VERSION}/code-server-${VSCODE_VERSION}-amd64.rpm
-    sudo rpm -i /tmp/code-server_${VSCODE_VERSION}_amd64.rpm
+    sudo rpm -iv --replacepkgs /tmp/code-server_${VSCODE_VERSION}_amd64.rpm
     systemctl stop code-server@$USER
     rm /lib/systemd/system/code-server@.service
     cat >> /lib/systemd/system/code-server@.service<< EOF
@@ -299,14 +301,15 @@ cp assets/.aliases ~/.aliases  > /dev/null 2>&1
 cp assets/.zshrc ~/.zshrc  > /dev/null 2>&1
 
 ## Install complete
+touch ./server-details.txt
 echo -e ${G}"Install complete...."${E}
+echo -e ${G}-----Code Server Details-----${E}
+echo -e ${G}Code Server UI:${E} http://THISERVERIP:8080 | tee -a ./server-details.txt
+echo -e ${G}Code Server Login${E} $VSCODE_PASSWORD | tee -a ./server-details.txt
 echo -e ${G}"------------------------------------------"${E}
+echo -e ${Y} Details above are saved to the file at ./server-details.txt${E}
 echo -e ${Y}"IT IS HIGHLY RECOMMENDED YOU REBOOT THIS SYSTEM BEFORE USE."${E}
 echo -e ${G}"------------------------------------------"${E}
-echo -e ${G}"Some possible next steps:"${E}
-echo -e " - Install a new theme on Oh-My-ZSH like PowerLevel10k: https://github.com/romkatv/powerlevel10k"
-echo -e " - Install additional ZSH plugins: https://github.com/unixorn/awesome-zsh-plugins"
-echo -e " - Update the ~/.aliases file with your own aliases"
 echo -e ${G}"Install complete. Have a great day!!"${E}
 cd ~
 zsh
