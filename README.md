@@ -16,7 +16,7 @@ This script installs some basic tools on Ubuntu/Debian or RHEL based systems to 
 ## How To Install
 
 - Login to server (duh)
-- Run `git clone https://github.com/mjtechguy/base-ubuntu-setup.git`
+- Run `git clone https://github.com/mjtechguy/enginerding-lab-server.git`
 - Change into the cloned dir `cd enginerding-lab-server`
 - Run the installer `./deploy.sh`
 
