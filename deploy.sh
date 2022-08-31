@@ -3,10 +3,20 @@
 # This script deploys the Enginerd Lab Server with all necessary components to run the Enginerd labs.
 
 set -e
-
 G="\e[32m"
 Y="\e[33m"
+R="\e[31m"
 E="\e[0m"
+
+FILE=.vars
+if test -f "$FILE"; then
+    echo -e ${G}"$FILE exists. Clear to proceed..."${E}
+else
+    echo -e ${R}"Whoops! $FILE does not exist. Please create the $FILE from $FILE.dist before proceeding. Details in the README.md"${E}
+    exit 1
+fi
+
+source .vars
 
 # Determine OS platform
 UNAME=$(uname | tr "[:upper:]" "[:lower:]")
@@ -94,6 +104,36 @@ else
   :
 fi
 
+## Install VSCode Server
+if [[ "$DISTRO" == *"Ubuntu"* ]] || [[ "$DISTRO" == *"debian"* ]]; then
+    echo -e ${G}"Installing VSCode-Server..."${E}
+    sudo mkdir -p /enginerding-labs
+    curl -fsSL -o /tmp/code-server_${VSCODE_VERSION}_amd64.deb https://github.com/coder/code-server/releases/download/v${VSCODE_VERSION}/code-server_${VSCODE_VERSION}_amd64.deb
+    sudo dpkg -i /tmp/code-server_${VSCODE_VERSION}_amd64.deb
+    systemctl stop code-server@$USER
+    rm /lib/systemd/system/code-server@.service
+    cat >> /lib/systemd/system/code-server@.service<< EOF
+    [Unit]
+    Description=code-server
+    After=network.target
+
+    [Service]
+    User=$USER
+    Group=$USER
+    Type=exec
+    Environment=PASSWORD=$VSCODE_PASSWORD
+    ExecStart=/usr/bin/code-server --bind-addr 0.0.0.0:8080 --user-data-dir /$USER/misc/code-server --auth password /enginerding-labs
+    Restart=always
+
+    [Install]
+    WantedBy=default.target
+EOF
+    cp assets/settings.json /$USER/misc/code-server/User/settings.json
+    sudo systemctl enable --now code-server@$USER
+else
+  :
+fi
+
 ######################
 # Deploy on RHEL Based
 ######################
@@ -119,7 +159,7 @@ if [[ "$DISTRO" == *"fedora"* ]]; then
   echo -e ${G}"Installing EPEL, yum-utils, dnf-plugins-core..."${E}
   sudo dnf upgrade --refresh -y
   sudo dnf install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm -y
-  sudo dnf install https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+  sudo dnf install https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm -y
   sudo dnf install yum-utils dnf-plugins-core -y
 else
   :
@@ -176,6 +216,36 @@ else
   :
 fi
 
+## Install VSCode Server
+if [[ "$DISTRO" == *"fedora"* ]] || [[ "$DISTRO" == *"centos"* ]] || [[ "$DISTRO" == *"rocky"* ]]; then
+    echo -e ${G}"Installing VSCode-Server..."${E}
+    sudo mkdir -p /enginerding-labs
+    curl -fsSL -o /tmp/code-server_${VSCODE_VERSION}_amd64.rpm https://github.com/coder/code-server/releases/download/v${VSCODE_VERSION}/code-server-${VSCODE_VERSION}-amd64.rpm
+    sudo rpm -i /tmp/code-server_${VSCODE_VERSION}_amd64.rpm
+    systemctl stop code-server@$USER
+    rm /lib/systemd/system/code-server@.service
+    cat >> /lib/systemd/system/code-server@.service<< EOF
+    [Unit]
+    Description=code-server
+    After=network.target
+
+    [Service]
+    User=$USER
+    Group=$USER
+    Type=exec
+    Environment=PASSWORD=$VSCODE_PASSWORD
+    ExecStart=/usr/bin/code-server --bind-addr 0.0.0.0:8080 --user-data-dir /$USER/misc/code-server --auth password /enginerding-labs
+    Restart=always
+
+    [Install]
+    WantedBy=default.target
+EOF
+    cp assets/settings.json /$USER/misc/code-server/User/settings.json
+    sudo systemctl enable --now code-server@$USER
+else
+  :
+fi
+
 #############################
 # Install on any Linux System
 #############################
@@ -225,8 +295,8 @@ fi
 
 ## Copy files
 echo -e ${G}"Copying dotfiles..."${E}
-cp .aliases ~/.aliases  > /dev/null 2>&1
-cp .zshrc ~/.zshrc  > /dev/null 2>&1
+cp assets/.aliases ~/.aliases  > /dev/null 2>&1
+cp assets/.zshrc ~/.zshrc  > /dev/null 2>&1
 
 ## Install complete
 echo -e ${G}"Install complete...."${E}
