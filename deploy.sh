@@ -270,6 +270,10 @@ echo -e ${G}"Installing yq..."${E}
 sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 > /dev/null 2>&1
 sudo chmod a+x /usr/local/bin/yq > /dev/null 2>&1
 
+## Install K3d
+echo -e ${G}"Installing k3d..."${E}
+curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
+
 ## Make ZSH Default Shell
 echo -e ${G}"Making ZSH the default shell..."${E}
 sudo chsh -s /bin/zsh $USER  > /dev/null 2>&1
@@ -304,12 +308,10 @@ cp assets/.zshrc ~/.zshrc  > /dev/null 2>&1
 touch ./server-details.txt
 echo -e ${G}"Install complete...."${E}
 echo -e ${G}-----Code Server Details-----${E}
-echo -e ${G}Code Server UI:${E} http://THISERVERIP:8080 | tee -a ./server-details.txt
-echo -e ${G}Code Server Login${E} $VSCODE_PASSWORD | tee -a ./server-details.txt
+echo -e ${G}Code Server UI:${E}http://THI-SERVER-IP:8080 | tee -a ./server-details.txt
+echo -e ${G}Code Server Login${E}$VSCODE_PASSWORD | tee -a ./server-details.txt
 echo -e ${G}"------------------------------------------"${E}
-echo -e ${Y} Details above are saved to the file at ./server-details.txt${E}
+echo -e ${Y}"Details above are saved to the file at enginerding-lab-server/server-details.txt"${E}
 echo -e ${Y}"IT IS HIGHLY RECOMMENDED YOU REBOOT THIS SYSTEM BEFORE USE."${E}
 echo -e ${G}"------------------------------------------"${E}
 echo -e ${G}"Install complete. Have a great day!!"${E}
-cd ~
-zsh
