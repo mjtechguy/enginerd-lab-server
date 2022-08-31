@@ -5,6 +5,7 @@
 set -e
 
 G="\e[32m"
+Y="\e[33m"
 E="\e[0m"
 
 # Determine OS platform
@@ -51,14 +52,28 @@ else
   :
 fi
 
-## Install Docker
-if [[ "$DISTRO" == *"Ubuntu"* ]] || [[ "$DISTRO" == *"debian"* ]]; then
+## Install Docker on Ubuntu
+if [[ "$DISTRO" == *"Ubuntu"* ]]; then
     echo -e ${G}"Installing Docker..."${E}
     sudo mkdir -p /etc/apt/keyrings  > /dev/null 2>&1
     sudo rm -f -- /etc/apt/keyrings/docker.gpg  > /dev/null 2>&1
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg  > /dev/null 2>&1
     echo   "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
     $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+    sudo apt-get update  > /dev/null 2>&1
+    sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin -y  > /dev/null 2>&1
+    sudo usermod -aG docker $USER  > /dev/null 2>&1
+else
+  :
+fi
+
+## Install Docker on Debian
+if [[ "$DISTRO" == *"debian"* ]]; then
+    echo -e ${G}"Installing Docker on Debian..."${E}
+    sudo mkdir -p /etc/apt/keyrings  > /dev/null 2>&1
+    sudo rm -f -- /etc/apt/keyrings/docker.gpg  > /dev/null 2>&1
+    curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
     sudo apt-get update  > /dev/null 2>&1
     sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin -y  > /dev/null 2>&1
     sudo usermod -aG docker $USER  > /dev/null 2>&1
@@ -92,9 +107,20 @@ else
 fi
 
 # Installing EPEL, yum-utils, dnf-plugins-core
-if [[ "$DISTRO" == *"centos"* ]] || [[ "$DISTRO" == *"redhat"* ]] || [[ "$DISTRO" == *"rocky"* ]]; then
+if [[ "$DISTRO" == *"centos"* ]] || [[ "$DISTRO" == *"rocky"* ]]; then
   echo -e ${G}"Installing EPEL, yum-utils, dnf-plugins-core..."${E}
   sudo dnf install epel-release yum-utils dnf-plugins-core -y
+else
+  :
+fi
+
+# Installing RPM Fusion, yum-utils, dnf-plugins-core on Fedora
+if [[ "$DISTRO" == *"fedora"* ]]; then
+  echo -e ${G}"Installing EPEL, yum-utils, dnf-plugins-core..."${E}
+  sudo dnf upgrade --refresh -y
+  sudo dnf install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm -y
+  sudo dnf install https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+  sudo dnf install yum-utils dnf-plugins-core -y
 else
   :
 fi
@@ -111,10 +137,20 @@ else
 fi
 
 # Install Docker
-if [[ "$DISTRO" == *"centos"* ]] || [[ "$DISTRO" == *"redhat"* ]] || [[ "$DISTRO" == *"rocky"* ]]; then
+if [[ "$DISTRO" == *"centos"* ]] || [[ "$DISTRO" == *"rocky"* ]]; then
     echo -e ${G}"Installing Docker..."${E}
+    sudo dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+    sudo dnf install docker-ce docker-ce-cli containerd.io docker-compose-plugin -y
+    sudo systemctl enable --now docker
+    sudo usermod -aG docker $USER
+else
+  :
+fi
+
+# Install Docker on Fedora
+if [[ "$DISTRO" == *"fedora"* ]]; then
+    echo -e ${G}"Installing Docker on Fedora..."${E}
     sudo dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
-    sed -i -e 's/baseurl=https:\/\/download\.docker\.com\/linux\/\(fedora\|rhel\)\/$releasever/baseurl\=https:\/\/download.docker.com\/linux\/centos\/$releasever/g' /etc/yum.repos.d/docker-ce.repo
     sudo dnf install docker-ce docker-ce-cli containerd.io docker-compose-plugin -y
     sudo systemctl enable --now docker
     sudo usermod -aG docker $USER
@@ -123,10 +159,19 @@ else
 fi
 
 # Install Terraform
-if [[ "$DISTRO" == *"centos"* ]] || [[ "$DISTRO" == *"redhat"* ]] || [[ "$DISTRO" == *"rocky"* ]]; then
+if [[ "$DISTRO" == *"centos"* ]] || [[ "$DISTRO" == *"rocky"* ]]; then
     echo -e ${G}"Installing Terraform..."${E}
     sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
     sudo yum -y install terraform -y
+else
+  :
+fi
+
+# Install Terraform on Fedora
+if [[ "$DISTRO" == *"fedora"* ]]; then
+    echo -e ${G}"Installing Terraform on Fedora..."${E}
+    sudo dnf config-manager --add-repo https://rpm.releases.hashicorp.com/fedora/hashicorp.repo
+    sudo dnf install terraform -y
 else
   :
 fi
@@ -185,6 +230,9 @@ cp .zshrc ~/.zshrc  > /dev/null 2>&1
 
 ## Install complete
 echo -e ${G}"Install complete...."${E}
+echo -e ${G}"------------------------------------------"${E}
+echo -e ${Y}"IT IS HIGHLY RECOMMENDED YOU REBOOT THIS SYSTEM BEFORE USE."${E}
+echo -e ${G}"------------------------------------------"${E}
 echo -e ${G}"Some possible next steps:"${E}
 echo -e " - Install a new theme on Oh-My-ZSH like PowerLevel10k: https://github.com/romkatv/powerlevel10k"
 echo -e " - Install additional ZSH plugins: https://github.com/unixorn/awesome-zsh-plugins"
