@@ -2,6 +2,19 @@
 
 This script installs some basic tools on Ubuntu/Debian or RHEL based systems to make the machine more useful for DevOps work.
 
+## Requirements
+- RHEL Based or Debian/Ubuntu Server
+- 4vCPU / 8GB RAM (Recommended)
+- User with passwordless sudo
+- Git installed
+
+## Tested On
+- Ubuntu 20/22
+- Fedora 36
+- Rocky 9
+- CentOS Stream 9
+- Debian 11
+
 ## Installed Components
 - OS Updates
 - Base Packages (ca-certificates curl gnupg lsb-release unzip haveged zsh jq)
@@ -11,6 +24,7 @@ This script installs some basic tools on Ubuntu/Debian or RHEL based systems to 
 - Kubectl
 - yq
 - ZSH and Oh-My-ZSH
+- Much More
 - Some dotfiles with aliases and ZSH configs
 
 ## How To Install
