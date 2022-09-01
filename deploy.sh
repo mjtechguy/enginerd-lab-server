@@ -315,4 +315,4 @@ echo -e ${Y}"Details above are saved to the file at enginerding-lab-server/serve
 echo -e ${Y}"IT IS HIGHLY RECOMMENDED YOU REBOOT THIS SYSTEM BEFORE USE."${E}
 echo -e ${G}"------------------------------------------"${E}
 echo -e ${G}"Install complete. Have a great day!!"${E}
-echo -e ${G}"Visit https://mjtechguy.com for more content like this."
+echo -e ${G}"Visit https://mjtechguy.com for more content like this."${E}
