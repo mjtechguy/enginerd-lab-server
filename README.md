@@ -30,9 +30,9 @@ This script installs some basic tools on Ubuntu/Debian or RHEL based systems to 
 ## How To Install
 
 - Login to server (duh)
-- Copy `.vars.dist` to `.vars` and update the `VSCODE_PASSWORD`
 - Run `git clone https://github.com/mjtechguy/enginerding-lab-server.git`
 - Change into the cloned dir `cd enginerding-lab-server`
+- Copy `.vars.dist` to `.vars` and update the `VSCODE_PASSWORD`
 - Run the installer `./deploy.sh`
 
 ## About Me ℹ️

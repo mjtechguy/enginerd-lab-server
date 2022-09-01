@@ -36,7 +36,7 @@ fi
 # Confirm OS is compatible with script
 if [[ "$DISTRO" == *"Ubuntu"* ]] || [[ "$DISTRO" == *"debian"* ]]; then
   echo "This is Ubuntu or Debian. You have clearance Clarence to proceed..."
-elif [[ "$DISTRO" == *"centos"* ]] || [[ "$DISTRO" == *"redhat"* ]] || [[ "$DISTRO" == *"rocky"* ]]; then
+elif [[ "$DISTRO" == *"centos"* ]] || [[ "$DISTRO" == *"fedora"* ]] || [[ "$DISTRO" == *"rocky"* ]]; then
   echo "This is RHEL Based. You have clearance Clarence to proceed..."
 else
   echo "Cannot be run on this systems. Needs to be Debian based (Ubuntu or Debian) or RHEL Based (RHEL, CentOS, Rocky, Fedora, Alma) to proceed. No install for you."
@@ -97,7 +97,7 @@ if [[ "$DISTRO" == *"Ubuntu"* ]] || [[ "$DISTRO" == *"debian"* ]]; then
     sudo apt-get update  > /dev/null 2>&1
     sudo apt-get install -y gnupg software-properties-common curl  > /dev/null 2>&1
     curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -  > /dev/null 2>&1
-    sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"  > /dev/null 2>&1
+    sudo apt-add-repository --yes "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"  > /dev/null 2>&1
     sudo apt-get update > /dev/null 2>&1
     sudo apt-get install terraform  > /dev/null 2>&1
 else
@@ -308,10 +308,11 @@ cp assets/.zshrc ~/.zshrc  > /dev/null 2>&1
 touch ./server-details.txt
 echo -e ${G}"Install complete...."${E}
 echo -e ${G}-----Code Server Details-----${E}
-echo -e ${G}Code Server UI:${E}http://THI-SERVER-IP:8080 | tee -a ./server-details.txt
+echo -e ${G}Code Server UI:${E}http://THIS-SERVER-IP:8080 | tee -a ./server-details.txt
 echo -e ${G}Code Server Login${E}$VSCODE_PASSWORD | tee -a ./server-details.txt
 echo -e ${G}"------------------------------------------"${E}
-echo -e ${Y}"Details above are saved to the file at enginerding-lab-server/server-details.txt"${E}
+echo -e ${Y}"Details above are saved to the file at enginerding-lab-server/server-details.txt."${E}
 echo -e ${Y}"IT IS HIGHLY RECOMMENDED YOU REBOOT THIS SYSTEM BEFORE USE."${E}
 echo -e ${G}"------------------------------------------"${E}
 echo -e ${G}"Install complete. Have a great day!!"${E}
+echo -e ${G}"Visit https://mjtechguy.com for more content like this."
