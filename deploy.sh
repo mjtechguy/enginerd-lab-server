@@ -49,15 +49,15 @@ fi
 # Install Updates on Ubuntu/Debian
 if [[ "$DISTRO" == *"Ubuntu"* ]] || [[ "$DISTRO" == *"debian"* ]]; then
   echo -e ${G}"Installing OS Updates..."${E}
-  sudo apt-get update #> /dev/null 2>&1
-  sudo apt upgrade -y #> /dev/null 2>&1
+  sudo DEBIAN_FRONTEND=noninteractive apt-get update #> /dev/null 2>&1
+  sudo DEBIAN_FRONTEND=noninteractive apt upgrade -y #> /dev/null 2>&1
 else
   :
 fi
 
 if [[ "$DISTRO" == *"Ubuntu"* ]] || [[ "$DISTRO" == *"debian"* ]]; then
   echo -e ${G}"Installing packages..."${E}
-  sudo apt-get install ca-certificates curl gnupg lsb-release unzip haveged zsh jq nano git -y
+  sudo DEBIAN_FRONTEND=noninteractive apt-get install ca-certificates curl gnupg lsb-release unzip haveged zsh jq nano git -y
 else
   :
 fi
